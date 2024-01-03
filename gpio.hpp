@@ -1,11 +1,3 @@
-/**
- * @file
- * @author Mariusz Chilmon <mariusz.chilmon@ctm.gdynia.pl>
- * @date 2023
- * 
- * Zarządzanie GPIO.
- */
-
 #pragma once
 
 #include <avr/io.h>
@@ -13,7 +5,7 @@
 /**
  * Numery pinów powiązane z LED-ami.
  */
-enum PIN_LED {
+enum PIN {
 	PIN_LED_FULL_BRIGHT = 2,
 	PIN_LED_PWM = 3,
 };

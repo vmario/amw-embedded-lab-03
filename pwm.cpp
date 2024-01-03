@@ -1,60 +1,36 @@
-/**
- * @file
- * @author Mariusz Chilmon <mariusz.chilmon@ctm.gdynia.pl>
- * @date 2023
- * 
- * Implementacja sterowania PWM.
- */
-
 #include "pwm.hpp"
 
 #include <avr/interrupt.h>
 
+namespace {
 /**
- * Konfiguracja Timer/Counter0 w trybie Fast PWM.
+ * Konfiguracja Timer/Counter2 w trybie Fast PWM.
  */
-static constexpr uint8_t TIMER0_FAST_PWM = _BV(WGM01) | _BV(WGM00);
+constexpr uint8_t TIMER2_FAST_PWM = _BV(WGM21) | _BV(WGM20);
 
 /**
- * Taktowanie Timer/Counter0 zegarem podzielonym przez 1024.
+ * Taktowanie Timer/Counter2 zegarem podzielonym przez 1024.
  */
-static constexpr uint8_t TIMER0_PRESCALER_1024 = _BV(CS02) | _BV(CS00);
+constexpr uint8_t TIMER2_PRESCALER = _BV(CS22) | _BV(CS21) | _BV(CS20);
 
-#if defined __AVR_ATmega32A__
 /**
- * Konfiguracja OC0 w trybie odwróconym.
+ * Konfiguracja OC2A w trybie odwróconym.
  * 
  * Używamy zanegowanego wyjścia ze względu na sterowanie LED-em za pomocą 0.
  */
-static constexpr uint8_t TIMER0_INVERTING_MODE = _BV(COM01) | _BV(COM00);
-#elif defined __AVR_ATmega1284P__
-/**
- * Konfiguracja OC0A w trybie odwróconym.
- * 
- * Używamy zanegowanego wyjścia ze względu na sterowanie LED-em za pomocą 0.
- */
-static constexpr uint8_t TIMER0_INVERTING_MODE = _BV(COM0A1) | _BV(COM0A0);
-#else
-#error Niezdefiniowany typ mikrokontrolera.
-#endif
+constexpr uint8_t TIMER2_INVERTING_MODE = _BV(COM2A1) | _BV(COM2A0);
+}
 
 /**
- * Obsługa przerwania TIMER0_OVF.
+ * Obsługa przerwania TIMER2_OVF.
  */
-ISR(TIMER0_OVF_vect)
+ISR(TIMER2_OVF_vect)
 {
 }
 
 void pwmInitialize()
 {
-#if defined __AVR_ATmega32A__
-	TCCR0 = TIMER0_FAST_PWM | TIMER0_INVERTING_MODE | TIMER0_PRESCALER_1024;
-	OCR0 = 1;
-#elif defined __AVR_ATmega1284P__
-	TCCR0A = TIMER0_FAST_PWM | TIMER0_INVERTING_MODE;
-	TCCR0B = TIMER0_PRESCALER_1024;
-	OCR0A = 1;
-#else
-#error Niezdefiniowany typ mikrokontrolera.
-#endif
+	TCCR2A = TIMER2_FAST_PWM | TIMER2_INVERTING_MODE;
+	TCCR2B = TIMER2_PRESCALER;
+	OCR2A = 10;
 }

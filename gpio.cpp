@@ -1,11 +1,3 @@
-/**
- * @file
- * @author Mariusz Chilmon <mariusz.chilmon@ctm.gdynia.pl>
- * @date 2023
- * 
- * Implementacja zarządzania GPIO.
- */
-
 #include "gpio.hpp"
 
 void gpioInitialize()
