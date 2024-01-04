@@ -1,6 +1,8 @@
 #include "gpio.hpp"
 #include "pwm.hpp"
 
+#include <avr/io.h>
+
 /**
  * Co robi ta funkcja?
  */
