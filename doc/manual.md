@@ -30,17 +30,17 @@ Celem ćwiczenia jest zapoznanie się z:
 1. Zweryfikuj, czy dioda `D1` świeci maksymalną jasnością.
 1. Zweryfikuj, czy dioda `D3` mruga słabym światłem.
 
-Dioda `LED2` podłączona jest do pinu `PB3`, którego alternatywną funkcją jest `OC0` (_Timer/Counter0 Output Compare Match Output_), co oznacza, że jest sterowany zdarzeniem generewanym przez `Timer/Counter0`. Timer ten został skonfigurowany w trybie _Fast PWM_. Jest to tryb, w którym możliwe jest regulowanie mocy dostarczanej do urządzenia wyjściowego (np. LED) poprzez szybkie włączanie i&nbsp;wyłączanie zasilania. Zmieniając proporcję między czasem włączenia i wyłączenia możemy dostarczyć mniej lub więcej mocy w jednostce czasu. W naszym przypadku wpływa to na jasność diody `LED2`.
+Dioda `D3` podłączona jest do pinu `PB3`, którego alternatywną funkcją jest `OC2A` (_Timer/Counter2 Output Compare Match A Output_), co oznacza, że jest sterowany zdarzeniem generewanym przez blok `A` peryferiału `Timer/Counter2`. Timer ten został skonfigurowany w trybie _Fast PWM_. Jest to tryb, w&nbsp;którym możliwe jest regulowanie mocy dostarczanej do urządzenia wyjściowego (np. LED) poprzez szybkie włączanie i&nbsp;wyłączanie zasilania. Zmieniając proporcję między czasem włączenia i wyłączenia możemy dostarczyć mniej lub więcej mocy w jednostce czasu. W naszym przypadku wpływa to na jasność diody `D3`.
 
 ![Regulacja mocy za pomocą modulacji szerokości impulsu](pwm.svg)
 
-Licznik `TCNT` timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC0` załącza sterowane urządzenie, a przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR0` — wyłącza je.
+Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC2A` załącza sterowane urządzenie, a&nbsp;przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR2A` (_Output Compare Register A_) — wyłącza je.
 
 ![Licznik pracujący w trybie _Fast PWM_](pwm-fast.png)
 
-\awesomebox[purple]{2pt}{\faMicrochip}{purple}{ATmega1284P może generować dwa sygnały na wyjściach \lstinline{OC0A} i \lstinline{OC0B}, sterowane — odpowiednio — wartościami rejestrów \lstinline{OCR0A} i \lstinline{OCR0B}. W~tym zadaniu korzystamy tylko z wyjścia \lstinline{OC0A} i rejestru \lstinline{OCR0A}.}
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{\textit{Timer/Counter2} może generować dwa sygnały na wyjściach \lstinline{OC2A} i \lstinline{OC2B}, sterowane — odpowiednio — wartościami rejestrów \lstinline{OCR2A} i \lstinline{OCR2B}. W~tym zadaniu korzystamy tylko z wyjścia \lstinline{OC2A} i rejestru \lstinline{OCR2A}.}
 
-\awesomebox[purple]{2pt}{\faMicrochip}{purple}{Mikrokontrolery AVR udostępniają jeszcze tryb \textit{Phase Correct PWM}, w którym uzyskiwana częstotliwość sygnału jest mniejsza, ale sposób synchronizacji impulsów jest korzystniejszy dla sterowania silników.}
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{Mikrokontrolery AVR obok trybut \textit{Fast PWM} udostępniają jeszcze tryb \textit{Phase Correct PWM}, w którym uzyskiwana częstotliwość sygnału jest mniejsza, ale sposób synchronizacji impulsów jest korzystniejszy dla sterowania silników.}
 
 # Zadanie podstawowe
 
@@ -66,6 +66,6 @@ Zmodyfikuj funkcję `pwmInitialize()`.
 
 ## Modyfikacja programu
 
-Wykorzystaj przerwanie `TIMER0_OVF`, które wywoływane jest po przepełnieniu timera (na koniec każdego cyklu odliczania).
+Wykorzystaj przerwanie `TIMER2_OVF`, które wywoływane jest po przepełnieniu timera (na koniec każdego cyklu odliczania).
 
-\awesomebox[violet]{2pt}{\faBook}{violet}{Przerwanie włącza flaga \lstinline{TOIE0} oraz funkcja \lstinline{sei()}.}
+\awesomebox[violet]{2pt}{\faBook}{violet}{Przerwanie włącza flaga \lstinline{TOIE2} oraz funkcja \lstinline{sei()}.}
