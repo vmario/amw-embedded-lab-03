@@ -6,7 +6,7 @@
  * Numery pinów powiązane z LED-ami.
  */
 enum PIN {
-	PIN_LED_FULL_BRIGHT = 2,
+	PIN_LED_FULL_BRIGHT = 5,
 	PIN_LED_PWM = 3,
 };
 

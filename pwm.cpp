@@ -2,7 +2,6 @@
 
 #include <avr/interrupt.h>
 
-namespace {
 /**
  * Konfiguracja Timer/Counter2 w trybie Fast PWM.
  */
@@ -19,7 +18,6 @@ constexpr uint8_t TIMER2_PRESCALER = _BV(CS22) | _BV(CS21) | _BV(CS20);
  * Używamy zanegowanego wyjścia ze względu na sterowanie LED-em za pomocą 0.
  */
 constexpr uint8_t TIMER2_INVERTING_MODE = _BV(COM2A1) | _BV(COM2A0);
-}
 
 /**
  * Obsługa przerwania TIMER2_OVF.
@@ -32,5 +30,5 @@ void pwmInitialize()
 {
 	TCCR2A = TIMER2_FAST_PWM | TIMER2_INVERTING_MODE;
 	TCCR2B = TIMER2_PRESCALER;
-	OCR2A = 10;
+	OCR2A = 0;
 }
