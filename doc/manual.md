@@ -30,15 +30,15 @@ Celem ćwiczenia jest zapoznanie się z:
 1. Zweryfikuj, czy dioda `D1` świeci maksymalną jasnością.
 1. Zweryfikuj, czy dioda `D3` mruga słabym światłem.
 
-Dioda `D3` podłączona jest do pinu `PB3`, którego alternatywną funkcją jest `OC2A` (_Timer/Counter2 Output Compare Match A Output_), co oznacza, że jest sterowany zdarzeniem generewanym przez blok `A` peryferiału `Timer/Counter2`. Timer ten został skonfigurowany w trybie _Fast PWM_. Jest to tryb, w&nbsp;którym możliwe jest regulowanie mocy dostarczanej do urządzenia wyjściowego (np. LED) poprzez szybkie włączanie i&nbsp;wyłączanie zasilania. Zmieniając proporcję między czasem włączenia i wyłączenia możemy dostarczyć mniej lub więcej mocy w jednostce czasu. W naszym przypadku wpływa to na jasność diody `D3`.
+Dioda `D3` podłączona jest do pinu `PB3`, którego alternatywną funkcją jest `OC2A` (_Timer/Counter2 Output Compare Match A Output_), co oznacza, że jest sterowany zdarzeniem generewanym przez kanał&nbsp;_A_ peryferiału _Timer/Counter2_. Timer ten został skonfigurowany w trybie _Fast PWM_. Jest to tryb, w&nbsp;którym możliwe jest regulowanie mocy dostarczanej do urządzenia wyjściowego (np. LED) poprzez szybkie włączanie i&nbsp;wyłączanie zasilania. Zmieniając proporcję między czasem włączenia i wyłączenia możemy dostarczyć mniej lub więcej mocy w jednostce czasu. W naszym przypadku wpływa to na jasność diody `D3`.
 
 ![Regulacja mocy za pomocą modulacji szerokości impulsu](pwm.svg)
 
-Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC2A` załącza sterowane urządzenie, a&nbsp;przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR2A` (_Output Compare Register A_) — wyłącza je.
+Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC2A` załącza sterowane urządzenie, a&nbsp;przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR2A` (_Output Compare Register A_) — wyłącza je. Wartość wpisana do rejestru `OCR2A` pozwala zatem wprost regulować moc dostarczaną do sterowanego urządzenia bez późniejszego angażowania CPU.
 
 ![Licznik pracujący w trybie _Fast PWM_](pwm-fast.png)
 
-\awesomebox[purple]{2pt}{\faMicrochip}{purple}{\textit{Timer/Counter2} może generować dwa sygnały na wyjściach \lstinline{OC2A} i \lstinline{OC2B}, sterowane — odpowiednio — wartościami rejestrów \lstinline{OCR2A} i \lstinline{OCR2B}. W~tym zadaniu korzystamy tylko z wyjścia \lstinline{OC2A} i rejestru \lstinline{OCR2A}.}
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{\textit{Timer/Counter2} może generować dwa sygnały na wyjściach \lstinline{OC2A} i \lstinline{OC2B}, sterowanych — odpowiednio — wartościami rejestrów \lstinline{OCR2A} i \lstinline{OCR2B}. W~tym zadaniu korzystamy tylko z kanału \textit{A} — wyjścia \lstinline{OC2A} i sterującego nim rejestru \lstinline{OCR2A}.}
 
 \awesomebox[purple]{2pt}{\faMicrochip}{purple}{Mikrokontrolery AVR obok trybut \textit{Fast PWM} udostępniają jeszcze tryb \textit{Phase Correct PWM}, w którym uzyskiwana częstotliwość sygnału jest mniejsza, ale sposób synchronizacji impulsów jest korzystniejszy dla sterowania silników.}
 
@@ -47,15 +47,20 @@ Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia si�
 ## Wymagania funkcjonalne
 
 1. Dioda `D1` świeci maksymalną jasnością.
-1. Dioda `D3` świeci połową jasności bez zauważalnego mrugania.
+1. Dioda `D3` świeci połową jasności bez zauważalnego mrugania. Jasność oceń organoleptycznie[^1].
 
 ## Modyfikacja programu
 
-Zmodyfikuj funkcję `pwmInitialize()`.
+Zmodyfikuj funkcję `pwmInitialize()`:
 
-\awesomebox[violet]{2pt}{\faBook}{violet}{Mruganie diody jest zauważalne, ponieważ timer taktowany jest zbyt wolnym zegarem. Zapoznaj się z bitami \lstinline{CS00}…\lstinline{CS02}.}
+1. Mruganie diody jest zauważalne, ponieważ timer taktowany jest zbyt wolnym zegarem. Zapoznaj się z bitami `CS20`…`CS22`.
+1. Użyj rejestru `OCR2A`, by ustawić jasność diody.
 
-\awesomebox[teal]{2pt}{\faCode}{teal}{Pamiętaj o zdefiniowaniu odpowiednio nazwanych stałych i udokumentowaniu ich.}
+![Za pomocą bitów `CS20`…`CS22` wybierany jest odpowiednio podzielony zegar](timer-prescaler.png)
+
+\awesomebox[violet]{2pt}{\faBook}{violet}{Potrzebne informacje znajdziesz w rozdziale \textit{8-bit Timer/Counter2 with PWM and Asynchronous Operation}, w szczególności w sekcji \textit{Register Description} dokumentacji mikrokontrolera.}
+
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{W tym ćwiczeniu mikrokontroler taktowany jest zegarem $clk_{I/O} = 2~\text{MHz}$.}
 
 # Zadanie rozszerzone
 
@@ -68,4 +73,6 @@ Zmodyfikuj funkcję `pwmInitialize()`.
 
 Wykorzystaj przerwanie `TIMER2_OVF`, które wywoływane jest po przepełnieniu timera (na koniec każdego cyklu odliczania).
 
-\awesomebox[violet]{2pt}{\faBook}{violet}{Przerwanie włącza flaga \lstinline{TOIE2} oraz funkcja \lstinline{sei()}.}
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{Przerwanie włącza flaga \lstinline{TOIE2} oraz funkcja \lstinline{sei()}.}
+
+[^1]: Innymi słowy &bdquo;na oko&rdquo;.
