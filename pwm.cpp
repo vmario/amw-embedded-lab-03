@@ -20,7 +20,7 @@ constexpr uint8_t TIMER2_PRESCALER = _BV(CS22) | _BV(CS21) | _BV(CS20);
 constexpr uint8_t TIMER2_INVERTING_MODE = _BV(COM2A1) | _BV(COM2A0);
 
 /**
- * Obsługa przerwania TIMER2_OVF.
+ * Obsługa przerwania przepełnienia Timer/Counter2.
  */
 ISR(TIMER2_OVF_vect)
 {
