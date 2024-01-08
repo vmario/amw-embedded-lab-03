@@ -34,13 +34,13 @@ Dioda `D3` podłączona jest do pinu `PB3`, którego alternatywną funkcją jest
 
 ![Regulacja mocy za pomocą modulacji szerokości impulsu](pwm.svg)
 
-Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC2A` załącza sterowane urządzenie, a&nbsp;przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR2A` (_Output Compare Register A_) — wyłącza je. Wartość wpisana do rejestru `OCR2A` pozwala zatem wprost regulować moc dostarczaną do sterowanego urządzenia bez późniejszego angażowania CPU.
+Licznik `TCNT` (_Timer/Counter Register_) timera w trybie _Fast PWM_ zmienia się od wartości `BOTTOM` (`0x00`) do wartości `TOP` (`0xFF`). Przy wartości `0x00` wyjście `OC2A` załącza sterowane urządzenie, a&nbsp;przy zrównaniu licznika z&nbsp;zaprogramowaną wartością `OCR2A` (_Output Compare Register A_) — wyłącza je. Wartość wpisana do rejestru `OCR2A` pozwala zatem wprost regulować moc dostarczaną do sterowanego urządzenia bez angażowania CPU.
 
 ![Licznik pracujący w trybie _Fast PWM_](pwm-fast.png)
 
 \awesomebox[purple]{2pt}{\faMicrochip}{purple}{\textit{Timer/Counter2} może generować dwa sygnały na wyjściach \lstinline{OC2A} i \lstinline{OC2B}, sterowanych — odpowiednio — wartościami rejestrów \lstinline{OCR2A} i \lstinline{OCR2B}. W~tym zadaniu korzystamy tylko z kanału \textit{A} — wyjścia \lstinline{OC2A} i sterującego nim rejestru \lstinline{OCR2A}.}
 
-\awesomebox[purple]{2pt}{\faMicrochip}{purple}{Mikrokontrolery AVR obok trybut \textit{Fast PWM} udostępniają jeszcze tryb \textit{Phase Correct PWM}, w którym uzyskiwana częstotliwość sygnału jest mniejsza, ale sposób synchronizacji impulsów jest korzystniejszy dla sterowania silników.}
+\awesomebox[purple]{2pt}{\faMicrochip}{purple}{Mikrokontrolery AVR obok trybut \textit{Fast PWM} udostępniają także tryb \textit{Phase Correct PWM}, w którym uzyskiwana częstotliwość sygnału jest mniejsza, ale sposób synchronizacji impulsów jest korzystniejszy dla sterowania silników.}
 
 # Zadanie podstawowe
 
@@ -67,11 +67,11 @@ Zmodyfikuj funkcję `pwmInitialize()`:
 ## Wymagania funkcjonalne
 
 1. Dioda `D1` świeci maksymalną jasnością.
-1. Jasność diody `D3` zmienia się płynnie od minimalnej do maksymalnej i z powrotem.
+1. Jasność diody `D3` cyklicznie i płynnie zmienia się od minimalnej do maksymalnej i z powrotem.
 
 ## Modyfikacja programu
 
-Wykorzystaj przerwanie `TIMER2_OVF`, które wywoływane jest po przepełnieniu timera (na koniec każdego cyklu odliczania).
+Wykorzystaj przerwanie `TIMER2_OVF` (plik `pwm.cpp`), które wywoływane jest po przepełnieniu timera (na koniec każdego cyklu odliczania).
 
 \awesomebox[purple]{2pt}{\faMicrochip}{purple}{Przerwanie włącza flaga \lstinline{TOIE2} oraz funkcja \lstinline{sei()}.}
 
